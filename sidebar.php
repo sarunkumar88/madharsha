@@ -18,76 +18,34 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/pages/helper-classes.html">
-                            <i class="material-icons">layers</i>
-                            <span>Helper Classes</span>
+                        <a href="employee-settings.php">
+                            <i class="material-icons">settings</i>
+                            <span>Employee Settings</span>
                         </a>
                     </li>
-                    <li>
+                    <li class="active">
                         <a href="javascript:void(0);" class="menu-toggle">
                             <i class="material-icons">swap_calls</i>
-                            <span>User Interface (UI)</span>
+                            <span>Canteen Timings</span>
                         </a>
                         <ul class="ml-menu">
                             <li>
-                                <a href="/pages/ui/alerts.html">Alerts</a>
+                                <a href="view-timings.php">View</a>
                             </li>
-                            <li>
-                                <a href="/pages/ui/animations.html">Animations</a>
-                            </li>
-                            <li>
-                                <a href="/pages/ui/badges.html">Badges</a>
-                            </li>
-
-                            <li>
-                                <a href="/pages/ui/breadcrumbs.html">Breadcrumbs</a>
-                            </li>
-                            <li>
-                                <a href="/pages/ui/buttons.html">Buttons</a>
-                            </li>                           
                         </ul>
                     </li>
                     <li class="active">
                         <a href="javascript:void(0);" class="menu-toggle">
-                            <i class="material-icons">assignment</i>
-                            <span>Forms</span>
+                            <i class="material-icons">swap_calls</i>
+                            <span>Employee Activities</span>
                         </a>
                         <ul class="ml-menu">
                             <li>
-                                <a href="/pages/forms/basic-form-elements.html">Basic Form Elements</a>
+                                <a href="absence-details.php">Absence</a>
                             </li>
                             <li>
-                                <a href="/pages/forms/advanced-form-elements.html">Advanced Form Elements</a>
-                            </li>
-                            <li>
-                                <a href="/pages/forms/form-examples.html">Form Examples</a>
-                            </li>
-                            <li class="active">
-                                <a href="/pages/forms/form-validation.html">Form Validation</a>
-                            </li>
-                            <li>
-                                <a href="/pages/forms/form-wizard.html">Form Wizard</a>
-                            </li>
-                            <li>
-                                <a href="/pages/forms/editors.html">Editors</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" class="menu-toggle">
-                            <i class="material-icons">view_list</i>
-                            <span>Tables</span>
-                        </a>
-                        <ul class="ml-menu">
-                            <li>
-                                <a href="/pages/tables/normal-tables.html">Normal Tables</a>
-                            </li>
-                            <li>
-                                <a href="/pages/tables/jquery-datatable.html">Jquery Datatables</a>
-                            </li>
-                            <li>
-                                <a href="/pages/tables/editable-table.html">Editable Tables</a>
-                            </li>
+                                <a href="mess-absence-details.php">Mess Absence</a>
+                            </li>                           
                         </ul>
                     </li>
                 </ul>
@@ -96,7 +54,7 @@
             <!-- Footer -->
             <div class="legal">
                 <div class="copyright">
-                    &copy; 2016 - 2017 <a href="javascript:void(0);">Madharsha</a>.
+                    &copy; <?php echo date("Y"); ?> <a href="javascript:void(0);">Madharsha</a>.
                 </div>
             </div>
             <!-- #Footer -->
