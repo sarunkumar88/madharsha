@@ -10,7 +10,7 @@
     // $employeeResult = sqlsrv_query($conn, $employeeQuery, array(), array( "Scrollable" => 'static' ));
     $employeeResult = sqlsrv_prepare($conn, $employeeQuery);
     if (!sqlsrv_execute($employeeResult)) {
-        echo "Your code is fail!";
+        echo "error!";
         die;
     }
 ?>

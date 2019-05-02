@@ -6,7 +6,7 @@
                 <ul class="list">
                     <li class="header">MAIN NAVIGATION</li>
                     <li class="<?php echo $page == 'home'? 'active': ''; ?>">
-                        <a href="employee-settings.php">
+                        <a href="index.php">
                             <i class="material-icons">home</i>
                             <span>Home</span>
                         </a>
@@ -29,11 +29,11 @@
                         </a>
                         <ul class="ml-menu">
                             <li class="<?php echo $page == 'absence'? 'active': ''; ?>">
-                                <a href="absence-details.php">Absence</a>
+                                <a href="absence-details.php">Activities</a>
                             </li>
-                            <li class="<?php echo $page == 'mess-absence'? 'active': ''; ?>">
+                            <!-- <li class="<?php echo $page == 'mess-absence'? 'active': ''; ?>">
                                 <a href="mess-absence-details.php">Mess Absence</a>
-                            </li>                           
+                            </li>                            -->
                         </ul>
                     </li>
                 </ul>
