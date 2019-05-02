@@ -1,21 +1,23 @@
 <?php 
+    $page = "timings";
     include "header.php";
-    include("config.php");
+    include("config.php");    
     
 	if(isset($_POST) && !empty($_POST)) {
         extract($_POST);
+        $mandatory = isset($IsMandatory) && $IsMandatory == 'on'? 'Y': null;
+        $mealColumn = str_replace(' ', '', $Meal);
         if(!empty($mealId) || $mealId != '') {
-            $query = "update CanteenMeals set meal = '".$meal."', fromTime = '".$fromTime."', toTime = '".$toTime."' where ID = '".$mealId."'";
+            $query = "if not exists (select column_name from INFORMATION_SCHEMA.COLUMNS where table_name = 'canteenmeals' and column_name = '".$mealColumn."' ) begin update CanteenMeals set Meal = '".$mealColumn."', OriginalName='".$Meal."', FromTime = '".$FromTime."', ToTime = '".$ToTime."', IsMandatory='".$mandatory."' where ID = '".$mealId."' end";
             $_SESSION['updated'] = true;
             $_SESSION['status'] = 2;
         } else {
-            $query = "insert into CanteenMeals(meal, fromTime, toTime) 
-            values('".$meal."','".$fromTime."','".$toTime."')";
+            $query = "if not exists (select column_name from INFORMATION_SCHEMA.COLUMNS where table_name = 'canteenmeals' and column_name = '".$mealColumn."' ) begin insert into CanteenMeals(Meal, OriginalName, FromTime, ToTime, IsMandatory) 
+            values('".$mealColumn."', '".$Meal."','".$FromTime."','".$ToTime."', '".$mandatory."') end";
             $_SESSION['added'] = true;
             $_SESSION['status'] = 2;
-        }        
+        }      
         sqlsrv_query($conn, $query);
-        echo "<script>location.href='view-timings.php';</script>";
     }
     
     $mealQuery = "select * from CanteenMeals";
@@ -27,7 +29,7 @@
             <div class="header">
                 <h2>
                     View meal details
-                    <button type="button" data-color="teal" class="btn bg-teal waves-effect" style="float:right;" data-toggle="modal" data-target="#defaultModal">Add Meal</button>
+                    <button type="button" data-color="teal" class="btn bg-teal waves-effect addModal" style="float:right;" data-toggle="modal" data-target="#defaultModal">Add Meal</button>
                 </h2>
                 
             </div>
@@ -37,9 +39,8 @@
                         <thead>
                             <tr>
                                 <th>Meal</th>
-                                <th>From</th>
-                                <th>To</th>
-                                <th>&nbsp;</th>
+                                <th>From Time</th>
+                                <th>To Time</th>
                                 <th>&nbsp;</th>
                             </tr>
                         </thead>
@@ -47,11 +48,14 @@
                             <?php 
                                 while($res = sqlsrv_fetch_array($mealResult, SQLSRV_FETCH_ASSOC)) { ?>
                                     <tr>
-                                        <td><?php echo $res['meal']; ?></td>
-                                        <td><?php echo $res['fromTime']->format('H:i'); ?></td>
-                                        <td><?php echo $res['toTime']->format('H:i'); ?></td>
-                                        <td><a href="javascript:void(0);" class="edit-meal" data-meal-id="<?php echo $res['ID']; ?>">Edit</a></td>
-                                        <td><a href="javascript:void(0);">Delete</a></td>
+                                        <td>
+                                            <a href="javascript:void(0);" class="edit-meal" data-meal-id="<?php echo $res['ID']; ?>">
+                                                <?php echo $res['OriginalName']; ?>
+                                            </a>
+                                        </td>
+                                        <td><?php echo $res['FromTime']->format('H:i'); ?></td>
+                                        <td><?php echo $res['ToTime']->format('H:i'); ?></td>
+                                        <td><a href="javascript:void(0);" onclick="showAjaxLoaderMessage(<?php echo $res['ID']; ?>);"><i class="material-icons">delete</i></a></td>
                                     </tr>
                             <?php }	?>                                 
                         </tbody>
@@ -74,20 +78,24 @@
                 <label for="meal">Meal</label>
                 <div class="form-group">
                     <div class="form-line">
-                        <input type="text" id="meal" name="meal" class="form-control" required placeholder="Enter meal type">
+                        <input type="text" id="meal" name="Meal" class="form-control" required placeholder="Enter meal type">
                     </div>
                 </div>
                 <label for="fromTime">From Time</label>
                 <div class="form-group">
                     <div class="form-line">
-                        <input type="text" id="fromTime" name="fromTime" class="timepicker form-control" required placeholder="Please choose a time...">
+                        <input type="text" id="fromTime" name="FromTime" class="timepicker form-control" required placeholder="Please choose a time...">
                     </div>
                 </div>
                 <label for="toTime">To Time</label>
                 <div class="form-group">
                     <div class="form-line">
-                        <input type="text" id="toTime" name="toTime" name="toTime" class="timepicker form-control" required placeholder="Please choose a time...">
+                        <input type="text" id="toTime" name="ToTime" name="toTime" class="timepicker form-control" required placeholder="Please choose a time...">
                     </div>
+                </div>                
+                <div class="form-group">
+                    <input type="checkbox" id="isMandatory" name="IsMandatory" />    
+                    <label for="isMandatory">Is Mandatory</label>                
                 </div>
                 <input type="hidden" name="mealId" id="mealId" />
                 <button type="submit" class="btn btn-primary m-t-15 waves-effect">Submit</button>
@@ -114,26 +122,46 @@
 				$("#meal").val(res[0]);
 				$("#fromTime").val(res[1]);
 				$("#toTime").val(res[2]);
-				$("#mealId").val(id);
+                $("#mealId").val(id);                
+                $("#isMandatory").prop('checked', res[3] == 'Y'? true: false);
 				$('#defaultModal').modal('show');
 			}
 		});
-	});
-	
-	$(".deleteModal").click(function() {
-		var con = confirm("Are sure want to delete?");
-		if(con==true) {
-			var id = $(this).attr("data-deleteid");
+    });
+
+    $(".addModal").click(function() {
+        $("#meal").val("");
+        $("#fromTime").val("");
+        $("#toTime").val("");
+        $("#mealId").val("");                
+        $("#isMandatory").prop('checked', false); 
+    })
+    
+    function showAjaxLoaderMessage(id) {
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this data again!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No, cancel!",
+            closeOnConfirm: false,
+            showLoaderOnConfirm: true,
+        }, function () {
 			$.ajax({
-				url:"ajaxTimeslot.php",
+				url:"ajax-meal.php",
 				data:{id:id, status:'delete'},
 				type:'post',
 				success:function() {
-					location.href=location.href;
+                    swal("Data deleted successfully!");
+                    setTimeout(function () {
+                        location.href = location.href;
+                    }, 2000);					
 				}
 			});
-		}		
-	});
+        });
+    }
 </script>
 
 <?php

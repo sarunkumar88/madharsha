@@ -17,33 +17,33 @@
                             <span>Typography</span>
                         </a>
                     </li>
-                    <li>
+                    <li class="<?php echo $page == 'settings'? 'active': ''; ?>">
                         <a href="employee-settings.php">
                             <i class="material-icons">settings</i>
                             <span>Employee Settings</span>
                         </a>
                     </li>
-                    <li class="active">
+                    <li class="<?php echo $page == 'timings'? 'active': ''; ?>">
                         <a href="javascript:void(0);" class="menu-toggle">
                             <i class="material-icons">swap_calls</i>
                             <span>Canteen Timings</span>
                         </a>
                         <ul class="ml-menu">
-                            <li>
+                            <li class="<?php echo $page == 'timings'? 'active': ''; ?>">
                                 <a href="view-timings.php">View</a>
                             </li>
                         </ul>
                     </li>
-                    <li class="active">
+                    <li class="<?php echo $page == 'absence' || $page == 'mess-absence'? 'active': ''; ?>">
                         <a href="javascript:void(0);" class="menu-toggle">
                             <i class="material-icons">swap_calls</i>
                             <span>Employee Activities</span>
                         </a>
                         <ul class="ml-menu">
-                            <li>
+                            <li class="<?php echo $page == 'absence'? 'active': ''; ?>">
                                 <a href="absence-details.php">Absence</a>
                             </li>
-                            <li>
+                            <li class="<?php echo $page == 'mess-absence'? 'active': ''; ?>">
                                 <a href="mess-absence-details.php">Mess Absence</a>
                             </li>                           
                         </ul>

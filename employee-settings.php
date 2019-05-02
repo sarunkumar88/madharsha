@@ -1,131 +1,76 @@
-<?php include "header.php"; ?>
+<?php 
+    $page = "settings";
+    include "header.php";
+    include("config.php");
+
+    $messQuery = "select Meal from CanteenMeals";
+    $messResult = sqlsrv_query($conn, $messQuery, array(), array("Scrollable" => 'static'));
+
+    $employeeQuery = "exec [GetEmployeeDetails]";
+    // $employeeResult = sqlsrv_query($conn, $employeeQuery, array(), array( "Scrollable" => 'static' ));
+    $employeeResult = sqlsrv_prepare($conn, $employeeQuery);
+    if (!sqlsrv_execute($employeeResult)) {
+        echo "Your code is fail!";
+        die;
+    }
+?>
 <div class="row clearfix">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="card">
             <div class="header">
                 <h2>
-                    BASIC EXAMPLE
+                    Employee Mess Settings
                 </h2>                
             </div>
             <div class="body">
                 <div class="table-responsive">
-                <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                    <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Position</th>
-                                <th>Office</th>
-                                <th>Age</th>
-                                <th>Start date</th>
-                                <th>Salary</th>
+                                <th>S. No</th>
+                                <th>Employee Code</th>
+                                <th>Employee Name</th>
+                                <th>Floor</th>
+                                <th>Shift</th>
+                                <?php 
+                                    $data = [];
+                                    while($rs = sqlsrv_fetch_array($messResult, SQLSRV_FETCH_ASSOC)) {
+                                        $data[] = $rs; ?>
+                                        <th><?php echo $rs['Meal']; ?></th>
+                                        <?php
+                                    }
+                                ?>
+                                <!-- <th>&nbsp;</th> -->
                             </tr>
                         </thead>
-                        <tfoot>
-                            <tr>
-                                <th>Name</th>
-                                <th>Position</th>
-                                <th>Office</th>
-                                <th>Age</th>
-                                <th>Start date</th>
-                                <th>Salary</th>
-                            </tr>
-                        </tfoot>
                         <tbody>
-                            <tr>
-                                <td>Tiger Nixon</td>
-                                <td>System Architect</td>
-                                <td><div><input type="radio" />te</div></td>
-                                <td>
-                                    <input type="checkbox" checked><span class="lever"></span>
-                                </td>
-                                <td>
-                                    <div class="demo-switch">
-                                        <div class="switch">
-                                            <input type="checkbox" checked><span class="lever"></span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="demo-switch">
-                                        <div class="switch">
-                                            <input type="checkbox" checked><span class="lever"></span>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Garrett Winters</td>
-                                <td>Accountant</td>
-                                <td>Tokyo</td>
-                                <td>63</td>
-                                <td>2011/07/25</td>
-                                <td>$170,750</td>
-                            </tr>
-                            <tr>
-                                <td>Ashton Cox</td>
-                                <td>Junior Technical Author</td>
-                                <td>San Francisco</td>
-                                <td>66</td>
-                                <td>2009/01/12</td>
-                                <td>$86,000</td>
-                            </tr>
-                            <tr>
-                                <td>Cedric Kelly</td>
-                                <td>Senior Javascript Developer</td>
-                                <td>Edinburgh</td>
-                                <td>22</td>
-                                <td>2012/03/29</td>
-                                <td>$433,060</td>
-                            </tr>
-                            <tr>
-                                <td>Airi Satou</td>
-                                <td>Accountant</td>
-                                <td>Tokyo</td>
-                                <td>33</td>
-                                <td>2008/11/28</td>
-                                <td>$162,700</td>
-                            </tr>
-                            <tr>
-                                <td>Brielle Williamson</td>
-                                <td>Integration Specialist</td>
-                                <td>New York</td>
-                                <td>61</td>
-                                <td>2012/12/02</td>
-                                <td>$372,000</td>
-                            </tr>
-                            <tr>
-                                <td>Herrod Chandler</td>
-                                <td>Sales Assistant</td>
-                                <td>San Francisco</td>
-                                <td>59</td>
-                                <td>2012/08/06</td>
-                                <td>$137,500</td>
-                            </tr>
-                            <tr>
-                                <td>Rhona Davidson</td>
-                                <td>Integration Specialist</td>
-                                <td>Tokyo</td>
-                                <td>55</td>
-                                <td>2010/10/14</td>
-                                <td>$327,900</td>
-                            </tr>
-                            <tr>
-                                <td>Colleen Hurst</td>
-                                <td>Javascript Developer</td>
-                                <td>San Francisco</td>
-                                <td>39</td>
-                                <td>2009/09/15</td>
-                                <td>$205,500</td>
-                            </tr>
-                            <tr>
-                                <td>Sonya Frost</td>
-                                <td>Software Engineer</td>
-                                <td>Edinburgh</td>
-                                <td>23</td>
-                                <td>2008/12/13</td>
-                                <td>$103,600</td>
-                            </tr>
-                                                                    
+                            <?php 
+                                $j = 0;
+                                while($res = sqlsrv_fetch_array($employeeResult)) { ?>
+                                    <tr>
+                                        <td><?php echo ++$j; ?></td>
+                                        <td><?php echo $res['EmployeeCode']; ?></td>
+                                        <td><?php echo $res['EmployeeName']; ?></td>
+                                        <td><?php echo $res['CompanySName']; ?></td>
+                                        <td><?php echo $res['DepartmentSName']; ?></td>
+                                        <?php 
+                                            for($i = 0; $i < count($data); $i++) { 
+                                                    $m = $data[$i]['Meal'];
+                                                ?>
+                                                <td>
+                                                    <div class="switch">
+                                                        <input type="checkbox" onClick="updateMessInfo(<?php echo $res['EmployeeId']; ?>, '<?php echo $m; ?>');" <?php echo $res[$m] == 'Y'? 'checked': ''; ?> id="chk-<?php echo $m; ?>-<?php echo $res['EmployeeId']; ?>">
+                                                        <label for="chk-<?php echo $m; ?>-<?php echo $res['EmployeeId']; ?>"></label>
+                                                    </div>
+                                                </td>
+                                                <?php
+                                            }
+                                        ?>
+                                        <!-- <td>
+                                            <a href="javascript:void(0);" onclick="updateMessInfo(<?php echo $res['EmployeeId']; ?>);"><i class="material-icons">mode_edit</i></a>
+                                        </td> -->
+                                    </tr>
+                            <?php }	?>                              
                         </tbody>
                     </table>
                 </div>
@@ -135,3 +80,19 @@
 </div>
 
 <?php include "footer.php"; ?>
+
+<script>    
+    function updateMessInfo(id, meal) {   
+        var changeMeal = $("#chk-"+meal+"-"+id).is(":checked")? 'Y': 'N';
+        // var lunch = $("#chk-l-"+id).is(":checked")? 'Y': 'N';
+        // var dinner = $("#chk-d-"+id).is(":checked")? 'Y': 'N';     
+        $.ajax({
+            url:"ajax-meal.php",
+            data:{id:id, changeMeal: changeMeal, meal: meal, status:'updateMess'},
+            type:'post',
+            success:function() {
+                swal("Good job!", "Details updated successfully!", "success");					
+            }
+        });
+    }
+</script>

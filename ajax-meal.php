@@ -3,15 +3,19 @@
 	include("config.php");
 	$id = $_POST['id'];
 	$status = $_POST['status'];
-	if($status=='update') {
+	if($status == 'update') {
 		$qry = "select * from CanteenMeals where id='$id'";
 		$result = sqlsrv_query($conn, $qry);
 		$res = sqlsrv_fetch_object($result);
-		echo $res->meal."##".$res->fromTime->format("H:i")."##".$res->toTime->format("H:i");
-	}  else if($status=='delete') {
-		echo $qry = "delete from CanteenMeals where id='$id'";
+		echo $res->OriginalName."##".$res->FromTime->format("H:i")."##".$res->ToTime->format("H:i")."##".$res->IsMandatory;
+	} else if($status == 'delete') {
+		$qry = "delete from CanteenMeals where id='$id'";
 		$result = sqlsrv_query($conn, $qry);
-		$_SESSION['msg'] = "Deleted Successfully";
+		echo '1';
+	} else if($status == 'updateMess') {
+        extract($_POST);
+		$qry = "update EmployeeMessInfo set $meal='".$changeMeal."' where EmployeeId='$id'";
+		$result = sqlsrv_query($conn, $qry);
 		echo '1';
 	}
 ?>
