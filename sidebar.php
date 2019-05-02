@@ -5,22 +5,10 @@
             <div class="menu">
                 <ul class="list">
                     <li class="header">MAIN NAVIGATION</li>
-                    <li>
-                        <a href="/index.html">
+                    <li class="<?php echo $page == 'home'? 'active': ''; ?>">
+                        <a href="employee-settings.php">
                             <i class="material-icons">home</i>
                             <span>Home</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/pages/typography.html">
-                            <i class="material-icons">text_fields</i>
-                            <span>Typography</span>
-                        </a>
-                    </li>
-                    <li class="<?php echo $page == 'settings'? 'active': ''; ?>">
-                        <a href="employee-settings.php">
-                            <i class="material-icons">settings</i>
-                            <span>Employee Settings</span>
                         </a>
                     </li>
                     <li class="<?php echo $page == 'timings'? 'active': ''; ?>">

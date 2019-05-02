@@ -10,12 +10,12 @@
         if(!empty($mealId) || $mealId != '') {
             $query = "if not exists (select column_name from INFORMATION_SCHEMA.COLUMNS where table_name = 'canteenmeals' and column_name = '".$mealColumn."' ) begin update CanteenMeals set Meal = '".$mealColumn."', OriginalName='".$Meal."', FromTime = '".$FromTime."', ToTime = '".$ToTime."', IsMandatory='".$mandatory."' where ID = '".$mealId."' end";
             $_SESSION['updated'] = true;
-            $_SESSION['status'] = 2;
+            $_SESSION['status'] = 1;
         } else {
             $query = "if not exists (select column_name from INFORMATION_SCHEMA.COLUMNS where table_name = 'canteenmeals' and column_name = '".$mealColumn."' ) begin insert into CanteenMeals(Meal, OriginalName, FromTime, ToTime, IsMandatory) 
             values('".$mealColumn."', '".$Meal."','".$FromTime."','".$ToTime."', '".$mandatory."') end";
             $_SESSION['added'] = true;
-            $_SESSION['status'] = 2;
+            $_SESSION['status'] = 1;
         }      
         sqlsrv_query($conn, $query);
     }
