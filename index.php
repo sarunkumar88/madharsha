@@ -91,7 +91,7 @@
             data:{id:id, changeMeal: changeMeal, meal: meal, status:'updateMess'},
             type:'post',
             success:function() {
-                swal("Good job!", "Details updated successfully!", "success");					
+                swal("Success", "Details updated successfully!", "success");					
             }
         });
     }

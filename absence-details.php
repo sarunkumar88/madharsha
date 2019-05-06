@@ -67,8 +67,8 @@
                             <tr>
                                 <th>S. No</th>
                                 <th>Date</th>
-                                <th>Employee Code</th>
-                                <th>Employee Name</th>
+                                <th>Code</th>
+                                <th>Name</th>
                                 <th>Floor</th>
                                 <th>Shift</th>
                                 <?php 
@@ -103,7 +103,7 @@
                                                 <?php
                                             }
                                         ?>
-                                        <td><?php echo $res['punchtime'] == 0 ? 'Absent': $res['punchtime'] > 5? 'Full Day': 'Half Day'; ?></td>
+                                        <td><?php echo $res['punchtime'] == 0 ? 'Absent': $res['punchtime'] > 8? 'Full Day': 'Half Day'; ?></td>
                                     </tr>
                             <?php }	?>                              
                         </tbody>
