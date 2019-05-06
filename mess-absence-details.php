@@ -2,33 +2,68 @@
     $page = "mess-absence";
     include "header.php";
     include("config.php");
-    
-	// if(isset($_POST) && !empty($_POST)) {
-    //     extract($_POST);
-    //     if(!empty($mealId) || $mealId != '') {
-    //         $query = "update CanteenMeals set meal = '".$meal."', fromTime = '".$fromTime."', toTime = '".$toTime."' where ID = '".$mealId."'";
-    //         $_SESSION['updated'] = true;
-    //         $_SESSION['status'] = 2;
-    //     } else {
-    //         $query = "insert into CanteenMeals(meal, fromTime, toTime) 
-    //         values('".$meal."','".$fromTime."','".$toTime."')";
-    //         $_SESSION['added'] = true;
-    //         $_SESSION['status'] = 2;
-    //     }        
-    //     sqlsrv_query($conn, $query);
-    //     echo "<script>location.href='view-timings.php';</script>";
-    // }
-    
-    $employeeQuery = "exec GetEmployeeDetails";
-    $employeeResult = sqlsrv_query($conn, $employeeQuery, array(), array( "Scrollable" => 'static' ));
+    $fromdate = date('Ymd');
+    $todate = date('Ymd');
+        
+	if(isset($_GET) && !empty($_GET)) {
+		extract($_GET);
+		$fromdate = $fromdate;
+		$todate = $todate;
+    }
+
+    $messQuery = "select Meal from CanteenMeals";
+    $messResult = sqlsrv_query($conn, $messQuery, array(), array("Scrollable" => 'static'));
+
+    $params = array(
+        array(&$myparams['fromdate'], SQLSRV_PARAM_IN),
+        array(&$myparams['todate'], SQLSRV_PARAM_IN)
+    );
+
+    $employeeQuery = "exec GetEmployeeMessAbsenceDetails @fromdate = $fromdate, @todate = $todate";
+    $employeeResult = sqlsrv_prepare($conn, $employeeQuery, $params);
+
+    $params = array(
+        array(&$myparams['fromdate'], SQLSRV_PARAM_IN),
+        array(&$myparams['todate'], SQLSRV_PARAM_IN)
+    );
+
+    if (!sqlsrv_execute($employeeResult)) {
+        //echo "error!";
+        //die(print_r(sqlsrv_errors(), true));  
+    }
 ?>
 <div class="row clearfix">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="card">
             <div class="header">
                 <h2>
-                    BASIC EXAMPLE
+                    Canteen Absence details
                 </h2>                
+            </div>
+            <div class="body" style="padding-bottom: 0px;">
+                <div class="row clearfix">
+                <form method="get" action="mess-absence-details.php">
+                    <div class="col-xs-3">
+                        <h2 class="card-inside-title">From Date</h2>
+                        <div class="form-group">
+                            <div class="form-line">
+                                <input type="text" class="form-control datepicker" name="fromdate" value="<?php echo $fromdate; ?>" placeholder="Please choose a date...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-3">
+                        <h2 class="card-inside-title">To Date</h2>
+                        <div class="form-group">
+                            <div class="form-line">
+                                <input type="text" class="form-control datepicker" name="todate" value="<?php echo $todate; ?>" placeholder="Please choose a date...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <button type="submit" class="btn btn-primary m-t-15 waves-effect">Submit</button>
+                    </div>
+                    </form>
+                </div>
             </div>
             <div class="body">
             <div class="table-responsive">
@@ -40,25 +75,36 @@
                             <th>Employee Name</th>
                             <th>Location</th>
                             <th>Mess</th>
-                            <th>Status</th>
+                            <th>Skipped</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php 
-                            $i = 0;
-                            while($res = sqlsrv_fetch_array($employeeResult, SQLSRV_FETCH_ASSOC)) { ?>
+                                $data = [];
+                                while($rs = sqlsrv_fetch_array($messResult, SQLSRV_FETCH_ASSOC)) {
+                                    $data[] = $rs; 
+                                }
+                            ?>
+                        <?php 
+                            $i = 0;                            
+                            while($res = sqlsrv_fetch_array($employeeResult, SQLSRV_FETCH_ASSOC)) { 
+                                //print_r($res);
+                                ?>
                                 <tr>
                                     <td><?php echo ++$i; ?>
                                     <td><?php echo $res['EmployeeCode']; ?></td>
                                     <td><?php echo $res['EmployeeName']; ?></td>
-                                    <td><?php echo $res['DeviceSName']; ?></td>
-                                    <td><?php echo 'Mess'; ?>
+                                    <td><?php echo $res['CompanySName']; ?></td>
+                                    <td><?php echo $res['DepartmentSName']; ?>
                                     <td>
-                                        <div class="demo-switch">
-                                            <div class="switch">
-                                                <input type="checkbox" checked><span class="lever"></span>
-                                            </div>
-                                        </div>
+                                    <?php 
+                                            for($i = 0; $i < count($data); $i++) { 
+                                                    $m = $data[$i]['Meal'];
+                                                ?>
+                                                    <?php echo $res[$m] == 'Y'? $m.",": ""; ?>                                                 
+                                                <?php
+                                            }
+                                        ?> 
                                     </td>
                                 </tr>
                         <?php }	?>                              

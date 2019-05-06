@@ -31,9 +31,9 @@
                             <li class="<?php echo $page == 'absence'? 'active': ''; ?>">
                                 <a href="absence-details.php">Activities</a>
                             </li>
-                            <!-- <li class="<?php echo $page == 'mess-absence'? 'active': ''; ?>">
+                            <li class="<?php echo $page == 'mess-absence'? 'active': ''; ?>">
                                 <a href="mess-absence-details.php">Mess Absence</a>
-                            </li>                            -->
+                            </li>                           
                         </ul>
                     </li>
                 </ul>
