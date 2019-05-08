@@ -66,7 +66,7 @@
                         <thead>
                             <tr>
                                 <th>S. No</th>
-                                <th>Date</th>
+                                <th width="10%">Date</th>
                                 <th>Code</th>
                                 <th>Name</th>
                                 <th>Floor</th>
