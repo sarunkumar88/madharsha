@@ -19,7 +19,8 @@
         array(&$myparams['todate'], SQLSRV_PARAM_IN)
     );
 
-    $employeeQuery = "exec GetEmployeeMessAbsenceDetails @fromdate = $fromdate, @todate = $todate";
+    //$employeeQuery = "exec GetEmployeeMessAbsenceDetails @fromdate = $fromdate, @todate = $todate";
+    $employeeQuery = "exec GetEmployeeMessDetails @fromdate = $fromdate, @todate = $todate";
     $employeeResult = sqlsrv_prepare($conn, $employeeQuery, $params);
 
     $params = array(
@@ -71,6 +72,7 @@
                     <thead>
                         <tr>
                             <th>S. No</th>
+                            <th>Date</th>
                             <th>Employee Code</th>
                             <th>Employee Name</th>
                             <th>Location</th>
@@ -80,34 +82,34 @@
                     </thead>
                     <tbody>
                         <?php 
-                                $data = [];
-                                while($rs = sqlsrv_fetch_array($messResult, SQLSRV_FETCH_ASSOC)) {
-                                    $data[] = $rs; 
-                                }
-                            ?>
+                            $data = [];
+                            while($rs = sqlsrv_fetch_array($messResult, SQLSRV_FETCH_ASSOC)) {
+                                $data[] = $rs; 
+                            }
+                        ?>
                         <?php 
-                            $i = 0;                            
+                            $j = 0;                            
                             while($res = sqlsrv_fetch_array($employeeResult, SQLSRV_FETCH_ASSOC)) { 
-                                //print_r($res);
+                                $skipped = "";
+                                for($i = 0; $i < count($data); $i++) { 
+                                    $m = $data[$i]['Meal'];                                    
+                                    if($res[$m] == 'Y' && empty($res["login_".$m])) {
+                                        $skipped .= $m.", ";
+                                    }
+                                }
+                                if($skipped != "" && $res['punchtime']) {
                                 ?>
                                 <tr>
-                                    <td><?php echo ++$i; ?>
+                                    <td><?php echo ++$j; ?>
+                                    <td><?php echo $res['PunchIn'] != null? $res['PunchIn']->format('d-m-Y'): ''; ?></td>
                                     <td><?php echo $res['EmployeeCode']; ?></td>
                                     <td><?php echo $res['EmployeeName']; ?></td>
                                     <td><?php echo $res['CompanySName']; ?></td>
                                     <td><?php echo $res['DepartmentSName']; ?>
-                                    <td>
-                                    <?php 
-                                            for($i = 0; $i < count($data); $i++) { 
-                                                    $m = $data[$i]['Meal'];
-                                                ?>
-                                                    <?php echo $res[$m] == 'Y'? $m.",": ""; ?>                                                 
-                                                <?php
-                                            }
-                                        ?> 
-                                    </td>
+                                    <td><?php echo substr($skipped, 0, -2); ?></td>
                                 </tr>
-                        <?php }	?>                              
+                        <?php }	
+                        }?>                              
                     </tbody>
                 </table>
             </div>

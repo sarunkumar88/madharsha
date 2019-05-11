@@ -85,10 +85,12 @@
                         <tbody>
                             <?php 
                                 $j = 0;
-                                while($res = sqlsrv_fetch_array($employeeResult, SQLSRV_FETCH_ASSOC)) { ?>
+                                while($res = sqlsrv_fetch_array($employeeResult, SQLSRV_FETCH_ASSOC)) {
+                                    $d = $res['PunchIn'] == null? date("d-m-Y", strtotime($fromdate)): $res['PunchIn']->format('d-m-Y');
+                                    ?>
                                     <tr>
                                         <td><?php echo ++$j; ?>
-                                        <td><?php echo $res['PunchIn']->format('d-m-Y'); ?>
+                                        <td><?php echo $res['PunchIn'] != null? $res['PunchIn']->format('d-m-Y'): $d; ?></td>
                                         <td><?php echo $res['EmployeeCode']; ?></td>
                                         <td><?php echo $res['EmployeeName']; ?></td>
                                         <td><?php echo $res['CompanySName']; ?></td>
@@ -103,7 +105,7 @@
                                                 <?php
                                             }
                                         ?>
-                                        <td><?php echo $res['punchtime'] == 0 ? 'Absent': $res['punchtime'] > 8? 'Full Day': 'Half Day'; ?></td>
+                                        <td><?php echo ! $res['punchtime']? 'Absent': ($res['punchtime'] > 8? 'Full Day': 'Half Day'); ?></td>
                                     </tr>
                             <?php }	?>                              
                         </tbody>
