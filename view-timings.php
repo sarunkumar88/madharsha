@@ -165,8 +165,8 @@
 </script>
 
 <?php
-    $updated = $_SESSION['updated'];
-    $added = $_SESSION['added'];
+    $updated = isset($_SESSION['updated'])? $_SESSION['updated']: false;
+    $added = isset($_SESSION['added'])? $_SESSION['added']: false;
     $msg = "";
     if(isset($_SESSION['status']) && $_SESSION['status'] > 0) {        
         if($added) {
